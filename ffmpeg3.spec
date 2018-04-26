@@ -23,7 +23,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg3
 Version:        3.4.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -32,6 +32,8 @@ License:        GPLv2+
 URL:            http://ffmpeg.org/
 Source0:	https://git.ffmpeg.org/gitweb/ffmpeg.git/snapshot/%{commit0}.tar.gz#/%{realname}-%{shortcommit0}.tar.gz
 # Backport of http://git.videolan.org/?p=ffmpeg.git;a=commitdiff;h=a606f27f4c610708fa96e35eed7b7537d3d8f712 thanks to Nicolas George
+Source1:	ffmpeg3.sh
+Source2:	ffmpeg3.conf
 Patch1:		fs56089.patch
 # forces the buffers to be flushed after a drain has completed. Thanks to jcowgill
 Patch2:		buffer_flush.patch
@@ -130,6 +132,7 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 
 %package        libs
 Summary:        Libraries for %{name}
+Supplements:	firefox
 
 %description    libs
 FFmpeg is a complete and free Internet live audio and video
@@ -311,6 +314,10 @@ rm -r %{buildroot}%{_datadir}/%{name}/examples
 install -pm755 tools/qt-faststart %{buildroot}/%{_bindir}/%{name}
 %endif
 
+# Install profile and ld.so.config files
+install -Dm755 %{S:1} "%{buildroot}/etc/profile.d/ffmpeg3.sh"
+install -Dm644 %{S:2} "%{buildroot}/etc/ld.so.conf.d/ffmpeg3.conf"
+
 %post libs -p /sbin/ldconfig
 
 %postun libs -p /sbin/ldconfig
@@ -332,6 +339,7 @@ install -pm755 tools/qt-faststart %{buildroot}/%{_bindir}/%{name}
 %{_mandir}/%{name}/man1/ffprobe*.1*
 %{_mandir}/%{name}/man1/ffserver*.1*
 %{_datadir}/%{name}
+%{_sysconfdir}/profile.d/%{name}.sh
 %endif
 
 %files libs
@@ -339,6 +347,7 @@ install -pm755 tools/qt-faststart %{buildroot}/%{_bindir}/%{name}
 %exclude %{_libdir}/%{name}/libavdevice.so.*
 %{_mandir}/%{name}/man3/lib*.3.gz
 %exclude %{_mandir}/%{name}/man3/libavdevice.3*
+%{_sysconfdir}/ld.so.conf.d/%{name}.conf
 
 %files -n libavdevice3
 %{_libdir}/%{name}/libavdevice.so.*
@@ -353,6 +362,9 @@ install -pm755 tools/qt-faststart %{buildroot}/%{_bindir}/%{name}
 %{_libdir}/%{name}/lib*.so
 
 %changelog
+
+* Wed Apr 25 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.2-2  
+- Fixed detection
 
 * Wed Mar 14 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.2-1  
 - Initial build
