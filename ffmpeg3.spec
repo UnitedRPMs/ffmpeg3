@@ -132,7 +132,7 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 
 %package        libs
 Summary:        Libraries for %{name}
-Supplements:	firefox
+Supplements:	firefox <= 60
 
 %description    libs
 FFmpeg is a complete and free Internet live audio and video
