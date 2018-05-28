@@ -23,7 +23,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg3
 Version:        3.4.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -362,6 +362,9 @@ install -Dm644 %{S:2} "%{buildroot}/etc/ld.so.conf.d/ffmpeg3.conf"
 %{_libdir}/%{name}/lib*.so
 
 %changelog
+
+* Fri Apr 27 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.2-3  
+- Automatic Mass Rebuild
 
 * Wed Apr 25 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.2-2  
 - Fixed detection
