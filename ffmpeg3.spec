@@ -23,7 +23,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg3
 Version:        3.4.2
-Release:        6%{?dist}
+Release:        7%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -109,7 +109,7 @@ BuildRequires:  texinfo
 %{?_with_twolame:BuildRequires: twolame-devel}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.155}
-%{!?_without_x265:BuildRequires: x265-devel >= 2.9}
+%{!?_without_x265:BuildRequires: x265-devel >= 3.0}
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
 BuildRequires:  zlib-devel
 %{?_with_zmq:BuildRequires: zeromq-devel}
@@ -362,6 +362,9 @@ install -Dm644 %{S:2} "%{buildroot}/etc/ld.so.conf.d/ffmpeg3.conf"
 %{_libdir}/%{name}/lib*.so
 
 %changelog
+
+* Sun Feb 17 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.2-7  
+- Rebuilt for x265
 
 * Fri Oct 12 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.2-6  
 - Rebuilt for x265
