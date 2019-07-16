@@ -303,9 +303,9 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %endif
 %endif
 
-%make_build V=0
+%make_build V=0 AM_DEFAULT_VERBOSITY=0
 make documentation V=0
-make alltools V=0
+make alltools V=0 AM_DEFAULT_VERBOSITY=0
 
 %install
 %make_install V=0
