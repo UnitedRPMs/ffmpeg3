@@ -23,7 +23,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg3
 Version:        3.4.2
-Release:        12%{?dist}
+Release:        13%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -123,6 +123,11 @@ BuildRequires:	libmysofa-devel
 BuildRequires:	shine-devel
 BuildRequires:	vid.stab-devel
 BuildRequires:	alsa-lib-devel
+%if 0%{?fedora} >= 31
+BuildRequires:  intel-mediasdk-devel
+%else
+BuildRequires:  libmfx-devel
+%endif
 
 %description
 FFmpeg is a complete and free Internet live audio and video
@@ -213,6 +218,7 @@ This package contains development files for %{name}
     --enable-libmysofa \\\
     --enable-libshine \\\
     --enable-libvidstab \\\
+    --enable-libmfx \\\
     %{!?_without_opengl:--enable-opengl} \\\
     --enable-libopenjpeg \\\
     --enable-libopus \\\
@@ -362,6 +368,9 @@ install -Dm644 %{S:2} "%{buildroot}/etc/ld.so.conf.d/ffmpeg3.conf"
 %{_libdir}/%{name}/lib*.so
 
 %changelog
+
+* Sun Dec 08 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.2-13 
+- F31 Replaced libmfx by intel-mediasdk
 
 * Sun Dec 01 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.2-12 
 - Rebuilt for x265
