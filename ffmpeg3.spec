@@ -23,7 +23,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg3
 Version:        3.4.2
-Release:        13%{?dist}
+Release:        14%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -368,6 +368,9 @@ install -Dm644 %{S:2} "%{buildroot}/etc/ld.so.conf.d/ffmpeg3.conf"
 %{_libdir}/%{name}/lib*.so
 
 %changelog
+
+* Wed Jan 01 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.2-14 
+- Rebuilt for xvid
 
 * Sun Dec 08 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.2-13 
 - F31 Replaced libmfx by intel-mediasdk
