@@ -6,3 +6,4 @@ SRPMS/*
 ffmpeg3-*.tar.bz2
 ffmpeg3-*.tar.gz
 bfg*.jar
+*.rpm
