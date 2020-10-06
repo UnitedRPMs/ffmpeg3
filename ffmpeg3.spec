@@ -1,5 +1,8 @@
 %global realname ffmpeg
 
+#define _legacy_common_support 1
+%global _lto_cflags %{nil}
+
 %if 0%{?fedora} >= 25
 # OpenCV 3.X has an overlinking issue - unsuitable for core libraries
 # Reported as https://github.com/opencv/opencv/issues/7001
@@ -23,7 +26,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg3
 Version:        3.4.2
-Release:        17%{?dist}
+Release:        18%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -368,6 +371,9 @@ install -Dm644 %{S:2} "%{buildroot}/etc/ld.so.conf.d/ffmpeg3.conf"
 %{_libdir}/%{name}/lib*.so
 
 %changelog
+
+* Mon Oct 05 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.2-18 
+- Rebuilt 
 
 * Sun Jul 05 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.2-17 
 - Rebuilt for x264
