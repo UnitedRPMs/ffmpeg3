@@ -18,15 +18,15 @@
 %endif
 
 # Globals for git repository
-%global commit0 c289f4b6c9390d5b2b6388b0d82d40af62ea7ce2
+%global commit0 567c20f78109588620c57696ab39ff314fe12d6c
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 %global gver .git%{shortcommit0}
 
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg3
-Version:        3.4.2
-Release:        20%{?dist}
+Version:        3.4.8
+Release:        1%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -111,7 +111,7 @@ BuildRequires:  subversion
 BuildRequires:  texinfo
 %{?_with_twolame:BuildRequires: twolame-devel}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
-%{!?_without_x264:BuildRequires: x264-devel >= 1:0.161}
+%{!?_without_x264:BuildRequires: x264-devel >= 1:0.163}
 %{!?_without_x265:BuildRequires: x265-devel >= 3.5}
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
 BuildRequires:  zlib-devel
@@ -371,6 +371,9 @@ install -Dm644 %{S:2} "%{buildroot}/etc/ld.so.conf.d/ffmpeg3.conf"
 %{_libdir}/%{name}/lib*.so
 
 %changelog
+
+* Fri Aug 06 2021 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.8-1 
+- Updated to 3.4.8
 
 * Fri Jul 16 2021 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.2-20 
 - Rebuilt x265
