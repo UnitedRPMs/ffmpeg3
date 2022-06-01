@@ -1,6 +1,8 @@
 %global realname ffmpeg
 
-#define _legacy_common_support 1
+%undefine _debuginfo_subpackages
+%undefine _debugsource_packages
+
 %global _lto_cflags %{nil}
 
 %if 0%{?fedora} >= 25
@@ -26,7 +28,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg3
 Version:        3.4.8
-Release:        1%{?dist}
+Release:        2%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -73,7 +75,7 @@ BuildRequires:  libGL-devel
 BuildRequires:  libmodplug-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
-%{?_with_ssh:BuildRequires: libssh-devel}
+BuildRequires: libssh-devel
 BuildRequires:  libtheora-devel
 BuildRequires:  libv4l-devel
 BuildRequires:  libvdpau-devel
@@ -88,7 +90,8 @@ BuildRequires:  yasm
 %{?_with_webp:BuildRequires: libwebp-devel}
 %{?_with_netcdf:BuildRequires: netcdf-devel}
 %{!?_without_nvenc:BuildRequires: nvenc-devel}
-%{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
+#{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
+BuildRequires: opencore-amr-devel vo-amrwbenc-devel
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
 BuildRequires:  opencl-headers ocl-icd-devel
@@ -131,6 +134,11 @@ BuildRequires:  intel-mediasdk-devel
 %else
 BuildRequires:  libmfx-devel
 %endif
+%if 0%{?fedora} >= 36
+BuildRequires:	annobin-plugin-gcc
+%endif
+BuildRequires: celt-devel
+BuildRequires: vo-amrwbenc-devel    zvbi-devel                
 
 %description
 FFmpeg is a complete and free Internet live audio and video
@@ -163,6 +171,8 @@ Requires:       %{name}-libs%{_isa} = %{version}-%{release}
 Requires:       libavdevice3%{_isa} = %{version}-%{release}
 Requires:       pkgconfig
 Requires:       libxcb
+Conflicts:	ffmpeg-devel
+Conflicts:	ffmpeg4-devel
 
 %description    devel
 FFmpeg is a complete and free Internet live audio and video
@@ -178,15 +188,14 @@ This package contains development files for %{name}
     --datadir=%{_datadir}/%{name} \\\
     --docdir=%{_docdir}/%{name} \\\
     --incdir=%{_includedir}/%{name} \\\
-    --libdir=%{_libdir}/%{name} \\\
+    --libdir=%{_libdir} \\\
     --mandir=%{_mandir}/%{name} \\\
     --pkgconfigdir=%{_datadir}/pkgconfig \\\
-    --arch=%{_target_cpu} \\\
     --optflags="%{optflags}" \\\
-    --extra-ldflags="%{?__global_ldflags}" \\\
-    %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
+    --extra-cflags="-I%{_includedir}/rav1e" \\\
+    %{?build_suffix:--build-suffix=%{build_suffix}} \\\
+    %{!?_without_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
-    --enable-libdrm \\\
     %{?_with_chromaprint:--enable-chromaprint} \\\
     %{!?_with_crystalhd:--disable-crystalhd} \\\
     --enable-fontconfig \\\
@@ -195,64 +204,81 @@ This package contains development files for %{name}
     %{?_with_gmp:--enable-gmp --enable-version3} \\\
     --enable-gnutls \\\
     %{!?_without_ladspa:--enable-ladspa} \\\
-    --enable-libass \\\
-    --enable-libbluray \\\
+    %{!?_without_ass:--enable-libass} \\\
+    %{!?_without_bluray:--enable-libbluray} \\\
     %{?_with_bs2b:--enable-libbs2b} \\\
     %{?_with_caca:--enable-libcaca} \\\
+    %{?_with_cuvid:--enable-cuvid --enable-nonfree} \\\
     %{!?_without_cdio:--enable-libcdio} \\\
     %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
+    --enable-libdrm \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
     %{?_with_fdk_aac:--enable-libfdk-aac --enable-nonfree} \\\
     %{?_with_flite:--enable-libflite} \\\
-    %{!?_without_jack:--enable-indev=jack} \\\
     --enable-libfreetype \\\
-    --enable-libfribidi \\\
+    %{!?_without_fribidi:--enable-libfribidi} \\\
     %{?_with_gme:--enable-libgme} \\\
     --enable-libgsm \\\
     %{?_with_ilbc:--enable-libilbc} \\\
+    %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
     --enable-libmp3lame \\\
-    --enable-libkvazaar \\\
+    --enable-libmysofa \\\
     %{?_with_netcdf:--enable-netcdf} \\\
-    %{!?_without_nvenc:--enable-nvenc --extra-cflags="-I%{_includedir}/nvenc"} \\\
+    %{?_with_mmal:--enable-mmal} \\\
+    %{!?_without_nvenc:--enable-nvenc} \\\
+    %{?_with_omx:--enable-omx} \\\
+    %{?_with_omx_rpi:--enable-omx-rpi} \\\
     %{!?_without_openal:--enable-openal} \\\
     %{!?_without_opencl:--enable-opencl} \\\
-    %{!?_without_opencv:--enable-libopencv} \\\
-    --enable-libopenh264 \\\
-    --enable-libmysofa \\\
-    --enable-libshine \\\
-    --enable-libvidstab \\\
-    --enable-libmfx \\\
+    %{?_with_opencv:--enable-libopencv} \\\
     %{!?_without_opengl:--enable-opengl} \\\
     --enable-libopenjpeg \\\
-    --enable-libopus \\\
+    %{!?_without_opus:--enable-libopus} \\\
     %{!?_without_pulse:--enable-libpulse} \\\
+    %{?_with_rav1e:--enable-librav1e} \\\
     %{?_with_rtmp:--enable-librtmp} \\\
     %{?_with_rubberband:--enable-librubberband} \\\
-    %{?_with_smb:--enable-libsmbclient} \\\
+    %{?_with_smb:--enable-libsmbclient --enable-version3} \\\
     %{?_with_snappy:--enable-libsnappy} \\\
     --enable-libsoxr \\\
     --enable-libspeex \\\
-    %{?_with_ssh:--enable-libssh} \\\
+    --enable-libssh \\\
+    %{?_with_svtav1:--enable-libsvtav1} \\\
     %{?_with_tesseract:--enable-libtesseract} \\\
     --enable-libtheora \\\
     %{?_with_twolame:--enable-libtwolame} \\\
     --enable-libvorbis \\\
     --enable-libv4l2 \\\
+    %{!?_without_vidstab:--enable-libvidstab} \\\
+    %{?_with_vmaf:--enable-libvmaf --enable-version3} \\\
+    %{?_with_vapoursynth:--enable-vapoursynth} \\\
     %{!?_without_vpx:--enable-libvpx} \\\
     %{?_with_webp:--enable-libwebp} \\\
     %{!?_without_x264:--enable-libx264} \\\
     %{!?_without_x265:--enable-libx265} \\\
     %{!?_without_xvid:--enable-libxvid} \\\
+    --enable-libxml2 \\\
+    %{!?_without_zimg--enable-libzimg} \\\
     %{?_with_zmq:--enable-libzmq} \\\
-    %{?_with_zvbi:--enable-libzvbi} \\\
+    %{!?_without_zvbi:--enable-libzvbi} \\\
     --enable-avfilter \\\
-    --enable-avresample \\\
+    --enable-libmodplug \\\
     --enable-postproc \\\
     --enable-pthreads \\\
     --disable-static \\\
     --enable-shared \\\
-    --enable-gpl \\\
+    %{!?_without_gpl:--enable-gpl} \\\
+    --enable-sdl2 \\\
+    --enable-libkvazaar \\\
+    --enable-libcelt \\\
+    --enable-gray \\\
+    --enable-libmfx \\\
+    --enable-libshine \\\
+    --enable-libopenh264 \\\
+    --enable-rdft \\\
+    --enable-pixelutils \\\
     --disable-debug \\\
+    --enable-swscale \\\
     --disable-stripping
 
 #--enable-x11grab \\\
@@ -271,7 +297,7 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %build
 
 %{ff_configure}\
-    --shlibdir=%{_libdir}/%{name} \
+    --shlibdir=%{_libdir} \
 %if 0%{?ffmpegsuffix:1}
     --build-suffix=%{ffmpegsuffix} \
     --disable-doc \
@@ -352,14 +378,14 @@ install -Dm644 %{S:2} "%{buildroot}/etc/ld.so.conf.d/ffmpeg3.conf"
 %endif
 
 %files libs
-%{_libdir}/%{name}/lib*.so.*
-%exclude %{_libdir}/%{name}/libavdevice.so.*
+%{_libdir}/lib*.so.*
+%exclude %{_libdir}/libavdevice.so.*
 %{_mandir}/%{name}/man3/lib*.3.gz
 %exclude %{_mandir}/%{name}/man3/libavdevice.3*
 %{_sysconfdir}/ld.so.conf.d/%{name}.conf
 
 %files -n libavdevice3
-%{_libdir}/%{name}/libavdevice.so.*
+%{_libdir}/libavdevice.so.*
 %{_mandir}/%{name}/man3/libavdevice.3*
 
 %files devel
@@ -368,9 +394,12 @@ install -Dm644 %{S:2} "%{buildroot}/etc/ld.so.conf.d/ffmpeg3.conf"
 %doc %{_docdir}/%{name}/*.html
 %{_includedir}/%{name}
 %{_datadir}/pkgconfig/lib*.pc
-%{_libdir}/%{name}/lib*.so
+%{_libdir}/lib*.so
 
 %changelog
+
+* Sat May 28 2022 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.8-2 
+- Rebuilt
 
 * Fri Aug 06 2021 Unitedrpms Project <unitedrpms AT protonmail DOT com> 3.4.8-1 
 - Updated to 3.4.8
